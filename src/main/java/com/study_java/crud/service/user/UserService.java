@@ -1,5 +1,6 @@
 package com.study_java.crud.service.user;
 
+import com.study_java.crud.dto.UserDTO;
 import com.study_java.crud.exceptions.ResourceNotFoundException;
 import com.study_java.crud.modals.User;
 import com.study_java.crud.repository.UserRepository;
@@ -29,7 +30,28 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public User updateUser(User user) {
-        return null;
+    public UserDTO updateUser(UserDTO request) {
+        User user = userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        user.setFullName(request.getFullName());
+        user.setAddress(request.getAddress());
+        user.setPhone(request.getPhone());
+        user.setActive(request.isActive());
+        return request;
+    }
+
+    @Override
+    public User createUser(UserDTO request) {
+        if(userRepository.existsByEmail(request.getEmail())) {
+            throw new RuntimeException("Email already in use");
+        }
+
+        User user = new User();
+        user.setFullName(request.getFullName());
+        user.setAddress(request.getAddress());
+        user.setPhone(request.getPhone());
+        user.setActive(request.isActive());
+        user.setEmail(request.getEmail());
+        return userRepository.save(user);
     }
 }

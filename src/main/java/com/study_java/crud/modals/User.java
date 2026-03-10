@@ -20,7 +20,10 @@ public class User {
     private Long id;
     private String username;
     private String password;
+
+    @Column(unique = true, nullable = false)
     private String email;
+
     private String phone;
     private String address;
     private String fullName;
